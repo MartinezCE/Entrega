@@ -85,12 +85,16 @@ class Contenedor {
 
     async deleteById(id) {
         try {
-            let data = await fs.promises.readFile(this.file, "utf-8");
-            let parsedData = await JSON.parse(data);
-            if (parsedData.find((e) => e.id === id)) {
-                console.log(parsedData.find((e) => e.id === id));
+            let data = await fs.promises.readFile(`${this.name}.json`, 'utf-8');
+            let parsedData = JSON.parse(data);
+            const existe = parsedData.find((e) => e.id === id);
+            if (existe) {
+                const dataFiltrada = parsedData.filter(
+                    (producto) => producto.id !== id
+                );
+                fs.writeFileSync(`${this.name}.json`, JSON.stringify(dataFiltrada));
             } else {
-                console.log("el elemento no existe");
+                console.log('el elemento no existe');
             }
         } catch (err) {
             throw new Error(`Error al invocar el metodo deleteById(${id})\n`, err);
@@ -127,10 +131,10 @@ const globo = {
     thumbnail: "https://cdn3.iconfinder.com/data/icons/education-209/64/globe-earth-geograhy-planet-school-256.png",
 
 };
-test.getById(2);
-/*test.getAll();
+/*test.getById(2);
+test.getAll();
 test.save(globo);
 test.save(escuadra);
 test.save(globo);
 test.deleteAll();
-            test.deleteById(2)*/
+test.deleteById(2)*/
