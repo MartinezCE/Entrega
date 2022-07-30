@@ -1,4 +1,8 @@
 const fs = require("fs");
+const express = require("express");
+
+const app = express();
+const PORT = process.env.PORT || 8080
 
 class Contenedor {
     constructor(name) {
@@ -109,6 +113,18 @@ class Contenedor {
             throw new Error("Erro al invocar al metodo deleteAll()\n", err);
         }
     }
+
+    async getRandomProduct() {
+        try {
+            let data = await fs.promises.readFile(this.file, "utf-8")
+            let parseData = await JSON.parse(data)
+            let RandomIndex = Math.floor(Math.random() * parseData.length)
+            let RandomProduct = parseData[RandomIndex]
+            return RandomProduct
+        } catch (error) {
+            console.error(error)
+        }
+    }
 }
 
 const test = new Contenedor("productos");
@@ -131,7 +147,24 @@ const globo = {
     thumbnail: "https://cdn3.iconfinder.com/data/icons/education-209/64/globe-earth-geograhy-planet-school-256.png",
 
 };
-/*test.getById(2);
+
+const server = app.listen(PORT, () => {
+    console.log(`Servidor http escuchando en el puerto ${server.address().port}`);
+});
+server.on("error", (error) => console.log(`Error en servidor ${error}`));
+
+app.get("/", (req, res) => {
+    res.json([{ dato: "desafio para coderhouse" }]);
+});
+app.get("/productos", (req, res) => {
+    res.json(test.getAll());
+});
+app.get("/productoRandom", (req, res) => {
+    res.send(test.getRandomProduct());
+});
+
+/*test.save(escuadra);
+test.getById(2);
 test.getAll();
 test.save(globo);
 test.save(escuadra);

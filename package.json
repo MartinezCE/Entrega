@@ -1,0 +1,23 @@
+{
+  "dependencies": {
+    "express": "^4.18.1"
+  },
+  "name": "desafio-coderhouse",
+  "description": "Desafio para el curso de programación brackend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MartinezCE/Entrega.git"
+  },
+  "author": "Cristian Martinez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MartinezCE/Entrega/issues"
+  },
+  "homepage": "https://github.com/MartinezCE/Entrega#readme"
+}
