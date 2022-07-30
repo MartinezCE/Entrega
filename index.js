@@ -116,13 +116,13 @@ class Contenedor {
 
     async getRandomProduct() {
         try {
-            let data = await fs.promises.readFile(this.file, "utf-8")
+            let data = await fs.promises.readFile(`${this.name}.json`, "utf-8")
             let parseData = await JSON.parse(data)
-            let RandomIndex = Math.floor(Math.random() * parseData.length)
-            let RandomProduct = parseData[RandomIndex]
-            return RandomProduct
+            let random = Math.floor(Math.random() * parseData.length)
+            let product = parseData[random]
+            return product
         } catch (error) {
-            console.error(error)
+            throw new Error("no es posible obtener un producto random --> getRandomProduct()\n", error)
         }
     }
 }
@@ -157,13 +157,14 @@ app.get("/", (req, res) => {
     res.json([{ dato: "desafio para coderhouse" }]);
 });
 app.get("/productos", (req, res) => {
-    res.json(test.getAll());
+    res.send(test.getAll());
 });
 app.get("/productoRandom", (req, res) => {
     res.send(test.getRandomProduct());
 });
 
-/*test.save(escuadra);
+/*
+gtest.save(escuadra);
 test.getById(2);
 test.getAll();
 test.save(globo);
