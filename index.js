@@ -147,20 +147,33 @@ const globo = {
     thumbnail: "https://cdn3.iconfinder.com/data/icons/education-209/64/globe-earth-geograhy-planet-school-256.png",
 
 };
+let respuesta
+test.getAll().then(res => {
+    respuesta = res
+})
+let elementoRandom
+test.getRandomProduct().then(res => {
+    elementoRandom = res
+})
 
 const server = app.listen(PORT, () => {
-    console.log(`Servidor http escuchando en el puerto ${server.address().port}`);
+    console.log(`
+Servidor http escuchando en el puerto $ { server.address().port }
+`);
 });
-server.on("error", (error) => console.log(`Error en servidor ${error}`));
+server.on("error", (error) => console.log(`
+Error en servidor $ { error }
+`));
 
 app.get("/", (req, res) => {
     res.json([{ dato: "desafio para coderhouse" }]);
 });
 app.get("/productos", (req, res) => {
-    res.send(test.getAll());
+    res.send(respuesta)
 });
 app.get("/productoRandom", (req, res) => {
-    res.send(test.getRandomProduct());
+
+    res.send(elementoRandom);
 });
 
 /*
