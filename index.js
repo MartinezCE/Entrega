@@ -1,9 +1,14 @@
 const fs = require("fs");
 const express = require("express");
+const { Router } = express;
+
 
 const app = express();
-const PORT = process.env.PORT || 8080
+const PORT = process.env.PORT || 8080;
+const router = Router();
 
+
+//CLASE CONTENEDOR
 class Contenedor {
     constructor(name) {
         this.name = name;
@@ -126,9 +131,10 @@ class Contenedor {
         }
     }
 }
-
+//NTANCIA CONTENEDOE
 const test = new Contenedor("productos");
 
+//OBJETOS A GUARDAR
 const escuadra = {
     title: "Escuadra",
     price: 123.45,
@@ -147,6 +153,9 @@ const globo = {
     thumbnail: "https://cdn3.iconfinder.com/data/icons/education-209/64/globe-earth-geograhy-planet-school-256.png",
 
 };
+
+
+//USANDO EXPRESS
 let respuesta
 test.getAll().then(res => {
     respuesta = res
@@ -165,6 +174,11 @@ server.on("error", (error) => console.log(`
 Error en servidor $ { error }
 `));
 
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(`/public`, express.static(__dirname + `/public`))
+app.use("/api/products", router)
+
 app.get("/", (req, res) => {
     res.json([{ dato: "desafio para coderhouse" }]);
 });
@@ -176,12 +190,71 @@ app.get("/productoRandom", (req, res) => {
     res.send(elementoRandom);
 });
 
-/*
-gtest.save(escuadra);
-test.getById(2);
-test.getAll();
-test.save(globo);
-test.save(escuadra);
-test.save(globo);
-test.deleteAll();
-test.deleteById(2)*/
+
+//PRODUCTOS ARRAY
+let productsLibreria = [
+    { id: 1, title: 'LAPIZ', price: 101, thumbnail: 'http://localhost:8080/public/libreria.jpg' },
+    { id: 2, title: 'ADHESIVO', price: 102, thumbnail: 'http://localhost:8080/public/libreria.jpg' },
+    { id: 3, title: 'MARCADOR', price: 102, thumbnail: 'http://localhost:8080/public/libreria.jpg' },
+];
+
+//USANDO ROUTER
+router.delete('/:id', (req, res) => {
+    let { id } = req.params;
+    const products = new Contenedor(productsLibreria);
+
+    id = parseInt(id);
+
+    const deletedProduct = products.deleteOne(id);
+    console.log(products.getAll());
+    if (deletedProduct != undefined) {
+        res.json({ success: 'ok', id });
+    } else {
+        res.json({ error: 'producto no encontrado' });
+    }
+});
+
+router.put('/:id', (req, res) => {
+    let { id } = req.params;
+    const { body } = req;
+    id = parseInt(id);
+
+    const products = new Contenedor(productsLibreria);
+
+    const changedProduct = products.updateOne(id, body);
+
+    if (changedProduct) {
+        res.json({ success: 'ok', new: changedProduct });
+    } else {
+        res.json({ error: 'producto no encontrado' });
+    }
+});
+
+router.post('/', (req, res) => {
+    const { body } = req;
+    body.price = parseFloat(body.price);
+
+    const products = new Contenedor(productsLibreria);
+    const productoGenerado = products.addOne(body);
+    res.json({ success: 'ok', new: productoGenerado });
+});
+
+router.get('/:id', (req, res) => {
+    let { id } = req.params;
+
+    const products = new Contenedor(productsLibreria);
+    id = parseInt(id);
+
+    const found = products.findOne(id);
+    if (found) {
+        res.json(found);
+    } else {
+        res.json({ error: 'producto no encontrado' });
+    }
+});
+
+router.get('/', (req, res) => {
+    //const { query } = req;
+    const products = new Contenedor(productsLibreria);
+    res.json(products.getAll());
+});
